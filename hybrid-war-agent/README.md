@@ -10,6 +10,15 @@ Dieses Verzeichnis enthält die IaC- und Deployment-Artefakte für den Hybrid-Wa
 - GitHub Actions für Linting, Terraform-Validierung und Pytest
 - Konfigurierbare Regeln in `rules.yaml` für die DEFCON-Engine
 
+### Helm-Charts (Kurzüberblick)
+Die Helm-Charts liefern CronJobs für ETL, NLP und Scoring. Beispiel-Installation:
+
+```bash
+helm upgrade --install etl deploy/helm/etl
+helm upgrade --install nlp deploy/helm/nlp
+helm upgrade --install scoring deploy/helm/scoring
+```
+
 ## Overview (English)
 This directory hosts the infrastructure-as-code skeleton and supporting assets for the Hybrid War Agent platform. The layout mirrors the required components described in the project brief:
 
@@ -19,6 +28,15 @@ This directory hosts the infrastructure-as-code skeleton and supporting assets f
 - Dockerfiles and sample apps for the AI services
 - GitHub Actions for linting, Terraform validation, and Pytest
 - Configurable rules in `rules.yaml` for the DEFCON engine
+
+### Helm charts (quick overview)
+The Helm charts ship CronJobs for ETL, NLP, and scoring. Example installation:
+
+```bash
+helm upgrade --install etl deploy/helm/etl
+helm upgrade --install nlp deploy/helm/nlp
+helm upgrade --install scoring deploy/helm/scoring
+```
 
 ## Nächste Schritte / Next Steps
 1. Parameter in `terraform/variables.tf` anpassen (Region, Tags, Zugänge).
