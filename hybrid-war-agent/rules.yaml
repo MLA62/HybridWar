@@ -1,0 +1,12 @@
+weights:
+  impact: 0.35
+  sector_criticality: 0.25
+  ttp_match: 0.20
+  bot_signal: 0.10
+  supplychain_single_point: 0.10
+thresholds:
+  defcon5: 0
+  defcon4: 11
+  defcon3: 31
+  defcon2: 56
+  defcon1: 81
