@@ -1,0 +1,45 @@
+flowchart TD
+    subgraph AWS[VPC - AWS Cloud]
+        direction TB
+        IGW[Internet Gateway]
+        ALB[Ingress / ALB]
+        EKS[EKS Cluster]
+        ETLJob[ETL Job]
+        NLPJob[NLP Job]
+        ScoreJob[Scoring Job]
+        Kinesis[Kinesis Stream]
+        S3Bucket[S3 Buckets]
+        OpenSearch[OpenSearch Domain]
+        Aurora[Aurora DB Cluster]
+        Neptune[Neptune Graph]
+        Secrets[Secrets Manager]
+        CloudTrail[CloudTrail Logs]
+    end
+
+    Users[(Analyst*innen)] -->|Review & Feedback| Grafana
+    Grafana[Grafana Dashboard] -->|Queries| OpenSearch
+    Grafana -->|Insights| Neptune
+
+    ExternalFeeds((OSINT / CERT / News)) --> ETLJob
+    ETLJob -->|Clean Data| Kinesis
+    ETLJob -->|Archive| S3Bucket
+    Kinesis --> NLPJob
+    NLPJob -->|Features| ScoreJob
+    NLPJob -->|GPT API Calls| GPT[GPT API]
+    ScoreJob -->|DEFCON Events| OpenSearch
+    ScoreJob -->|DEFCON Level| Neptune
+    ScoreJob -->|Alerts| Alerts[SNS / Slack / Email]
+
+    Kinesis -->|Lambda Consumers| LambdaFleet[Lambdas]
+    LambdaFleet -->|Indexing| OpenSearch
+
+    EKS --> ETLJob
+    EKS --> NLPJob
+    EKS --> ScoreJob
+
+    Secrets --> EKS
+    Secrets --> Aurora
+    Secrets --> Neptune
+    CloudTrail --> SIEM[Security Analytics]
+
+    IGW --> ALB --> EKS

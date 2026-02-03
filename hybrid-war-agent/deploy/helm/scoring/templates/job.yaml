@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "scoring-job.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "scoring-job.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "scoring-job.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: scoring
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: RULES_PATH
+              value: {{ .Values.env.rulesPath | quote }}
+            - name: ALERTS_TOPIC_ARN
+              value: {{ .Values.env.alertsTopicArn | quote }}
+          volumeMounts:
+            - name: rules
+              mountPath: /etc/defcon
+          resources:
+            limits:
+              cpu: {{ .Values.job.resources.limits.cpu | quote }}
+              memory: {{ .Values.job.resources.limits.memory | quote }}
+            requests:
+              cpu: {{ .Values.job.resources.requests.cpu | quote }}
+              memory: {{ .Values.job.resources.requests.memory | quote }}
+      volumes:
+        - name: rules
+          configMap:
+            name: {{ include "scoring-job.fullname" . }}-rules

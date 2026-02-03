@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "nlp-job.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "nlp-job.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "nlp-job.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: nlp
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MODEL_NAME
+              value: {{ .Values.env.modelName | quote }}
+            - name: OUTPUT_INDEX
+              value: {{ .Values.env.outputIndex | quote }}
+          resources:
+            limits:
+              cpu: {{ .Values.job.resources.limits.cpu | quote }}
+              memory: {{ .Values.job.resources.limits.memory | quote }}
+            requests:
+              cpu: {{ .Values.job.resources.requests.cpu | quote }}
+              memory: {{ .Values.job.resources.requests.memory | quote }}
