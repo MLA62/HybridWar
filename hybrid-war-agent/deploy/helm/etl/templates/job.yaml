@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "etl-job.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "etl-job.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "etl-job.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: etl
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: KINESIS_STREAM
+              value: {{ .Values.env.kinesisStream | quote }}
+            - name: RAW_BUCKET
+              value: {{ .Values.env.rawBucket | quote }}
+          resources:
+            limits:
+              cpu: {{ .Values.job.resources.limits.cpu | quote }}
+              memory: {{ .Values.job.resources.limits.memory | quote }}
+            requests:
+              cpu: {{ .Values.job.resources.requests.cpu | quote }}
+              memory: {{ .Values.job.resources.requests.memory | quote }}

@@ -1,0 +1,26 @@
+name: Terraform Validate
+
+on:
+  push:
+    paths:
+      - "hybrid-war-agent/terraform/**"
+      - ".github/workflows/terraform-validate.yml"
+  pull_request:
+    paths:
+      - "hybrid-war-agent/terraform/**"
+      - ".github/workflows/terraform-validate.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.6.6"
+      - name: Terraform init
+        working-directory: hybrid-war-agent/terraform
+        run: terraform init -backend=false
+      - name: Terraform validate
+        working-directory: hybrid-war-agent/terraform
+        run: terraform validate

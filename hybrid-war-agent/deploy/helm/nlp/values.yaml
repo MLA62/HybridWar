@@ -1,0 +1,19 @@
+image:
+  repository: hybrid-war-agent/nlp
+  tag: latest
+  pullPolicy: IfNotPresent
+
+job:
+  schedule: "*/15 * * * *"
+  backoffLimit: 1
+  resources:
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+
+env:
+  modelName: "de_core_news_lg"
+  outputIndex: "threat-intel"
